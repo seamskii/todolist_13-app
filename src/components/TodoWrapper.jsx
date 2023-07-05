@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Todo } from "./Todo";
 import { TodoForm } from "./TodoForm";
@@ -7,8 +6,7 @@ import { EditTodoForm } from "./EditTodoForm";
 import axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 import TodoDropdowns from "./TodoDropdowns";
-import { format } from 'date-fns';
-
+import { format } from "date-fns";
 
 export const TodoWrapper = ({ todos }) => {
   const [todoLocal, setTodoLocal] = useState([]);
@@ -41,17 +39,17 @@ export const TodoWrapper = ({ todos }) => {
         window.alert("Task already exists: " + task);
         return;
       }
-  
+
       await axios.post("http://localhost:5000/tasks", {
         task: task,
         completed: false,
       });
-  
+
       fetchData(); // Fetch updated data with new IDs
-  
+
       const currentDate = new Date();
-      const formattedDate = format(currentDate, 'dd/MM/yyyy');
-  
+      const formattedDate = format(currentDate, "dd/MM/yyyy");
+
       const newTodo = {
         id: uuidv4(),
         task: task,
@@ -64,7 +62,6 @@ export const TodoWrapper = ({ todos }) => {
       console.error("Failed to add task:", error);
     }
   };
-  
 
   const deleteTodo = async (id) => {
     try {
@@ -118,8 +115,7 @@ export const TodoWrapper = ({ todos }) => {
 
       await axios.patch(`http://localhost:5000/tasks/${id}`, {
         task: task,
-        completed:
-          existingTodo.task === task ? existingTodo.completed : false,
+        completed: existingTodo.task === task ? existingTodo.completed : false,
       });
 
       setTodoLocal((prevTodoLocal) =>
@@ -128,8 +124,7 @@ export const TodoWrapper = ({ todos }) => {
             ? {
                 ...todo,
                 task: task,
-                completed:
-                  existingTodo.task === task ? todo.completed : false,
+                completed: existingTodo.task === task ? todo.completed : false,
                 isEditing: !todo.isEditing,
               }
             : todo
@@ -159,17 +154,14 @@ export const TodoWrapper = ({ todos }) => {
   };
 
   const handleFilterChange = (e) => {
-    console.log("filter")
     setFilter(e.target.value);
   };
 
   const handleSortChange = (e) => {
-    console.log("sort")
     setSort(e.target.value);
   };
 
   const handleDirectionChange = (e) => {
-    console.log("direction",e.target.value)
     setDirection(e.target.value);
   };
 
@@ -192,10 +184,15 @@ export const TodoWrapper = ({ todos }) => {
           compareValue = a.completed - b.completed;
           break;
         case "date":
-          compareValue = a.createdAt && b.createdAt ? a.createdAt.localeCompare(b.createdAt) : 0;
+          compareValue =
+            a.createdAt && b.createdAt
+              ? a.createdAt.localeCompare(b.createdAt)
+              : 0;
           break;
         case "description":
-          compareValue = (a.description || "").localeCompare(b.description || "");
+          compareValue = (a.description || "").localeCompare(
+            b.description || ""
+          );
           break;
         default:
           compareValue = 0;
@@ -203,8 +200,6 @@ export const TodoWrapper = ({ todos }) => {
       }
       return direction === "asc" ? compareValue : -compareValue;
     });
-    
-    
 
   if (!data) return <h2>Loading...</h2>;
 
@@ -219,7 +214,7 @@ export const TodoWrapper = ({ todos }) => {
         direction={direction}
         handleDirectionChange={handleDirectionChange}
       />
-  
+
       <TodoForm addTodo={addTodo} />
       {filteredAndSortedTodos.map((element) =>
         element.isEditing ? (
